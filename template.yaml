@@ -74,7 +74,8 @@ spec:
           owner: ${{user.entity.metadata.name}}
           cluster_id: .gitlab.apps.sno.ocp.internal
           # namespace: ${{parameters.namespace}}
-          component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
+          # component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
+          component_id: ${{parameters.gitlabGroup}}-${{parameters.gitlabProject}}-backend-app
     - id: publishSource
       name: Publishing to Source Code Repository
       action: publish:gitlab
