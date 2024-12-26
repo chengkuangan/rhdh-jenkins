@@ -1,0 +1,94 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: poi-backend-demo-template
+  title: Quarkus Backend Application for Points-of-Interest Map Showcase
+  description: Creates the quarkus poi backend app for demo
+  tags:
+    - java
+    - quarkus
+    - maven
+    - showcase
+spec:
+  owner: ganck
+  type: service
+
+  parameters:
+    - title: Provide information about the GitLab location
+      required:
+        - gitlabGroup
+      properties:
+        gitlabGroup:
+          title: Repo Owner
+          type: string
+          description: GitLab Organization
+          default: demo
+          enum:
+            - demo
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this component is for
+          default: Creates the quarkus poi backend app for the workshop
+    - title: Provide information about the new component
+      required:
+        - namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+          description: Namespace
+          default: poi-demo
+    - title: Provide Build Information
+      required:
+        - image_host
+        - image_tag
+      properties:
+        image_host:
+          title: Image Host
+          type: string
+          description: Host for storing image (defaults to openshift internal)
+          default: image-registry.openshift-image-registry.svc:5000
+        image_tag:
+          title: Image Tag
+          default: latest
+          type: string
+          description: Image tag to use for storing in the internal registry
+  steps:
+    - id: templateSource
+      name: Generating the source code component
+      action: fetch:template
+      input:
+        url: ./skeleton
+        targetPath: ./source
+        values:
+          git_host: gitlab.apps.sno.ocp.internal
+          gitlabGroup: ${{parameters.gitlabGroup}}
+          repoName: ${{parameters.namespace}}-backend
+          owner: ${{user.entity.metadata.name}}
+          cluster_id: .gitlab.apps.sno.ocp.internal
+          namespace: ${{parameters.namespace}}
+          component_id: ${{parameters.namespace}}-poi-backend-app
+    - id: publishSource
+      name: Publishing to Source Code Repository
+      action: publish:gitlab
+      input:
+        sourcePath: ./source
+        description: ${{parameters.description}}
+        repoUrl: gitlab.apps.sno.ocp.internal?owner=${{parameters.gitlabGroup}}&repo=${{parameters.namespace}}-backend
+        defaultBranch: main
+        protectDefaultBranch: false
+        repoVisibility: public
+    - id: registerSource
+      name: Registering the Source Code Component
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{steps.publishSource.output.repoContentsUrl}}
+        catalogInfoPath: /catalog-info.yaml
+  output:
+    links:
+      - title: Source Code Repository
+        url: ${{steps.publishSource.output.remoteUrl}}
+      - title: Open Component in catalog
+        icon: catalog
+        entityRef: ${{steps.registerSource.output.entityRef}}
