@@ -8,7 +8,7 @@ metadata:
   annotations:
     argocd/app-name: ${{values.component_id}}-dev
     backstage.io/kubernetes-id: ${{values.component_id}}
-    backstage.io/kubernetes-namespace: ${{values.namespace}}
+    # backstage.io/kubernetes-namespace: ${{values.namespace}}
     backstage.io/techdocs-ref: url:https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}
     backstage.io/source-location: url:https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}
     janus-idp.io/tekton:  ${{values.component_id}}
@@ -18,13 +18,14 @@ metadata:
     - quarkus
     - maven
     - workshop
+    - jenkins
   links:
-    - url: https://console-openshift-console${{values.cluster_id}}/dev-pipelines/ns/${{values.namespace}}/
-      title: Pipelines
-      icon: web
-    - url: https://console-openshift-console${{values.cluster_id}}/k8s/ns/${{values.namespace}}/deployments/${{values.component_id}}
-      title: Deployment
-      icon: web
+    # - url: https://console-openshift-console${{values.cluster_id}}/dev-pipelines/ns/${{values.namespace}}/
+    #   title: Pipelines
+    #   icon: web
+    # - url: https://console-openshift-console${{values.cluster_id}}/k8s/ns/${{values.namespace}}/deployments/${{values.component_id}}
+    #   title: Deployment
+    #   icon: web
     - url: https://devspaces${{values.cluster_id}}/#https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}?che-editor=che-incubator/che-code/latest&devfilePath=.devfile-vscode.yaml
       title: OpenShift Dev Spaces (VS Code)
       icon: web
@@ -32,14 +33,14 @@ spec:
   type: service
   lifecycle: production
   owner: ${{values.owner | dump}}
-  system: workshop-system-${{values.namespace}}
+  system: workshop-system-${{values.gitlabProject}}
   providesApis:
-    - backend-api-${{values.namespace}}
+    - backend-api-${{values.gitlabProject}}
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: workshop-system-${{values.namespace}}
+  name: workshop-system-${{values.gitlabProject}}
   tags:
     - backstage
     - janus-idp
@@ -52,12 +53,12 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
-  name: backend-api-${{values.namespace}}
+  name: backend-api-${{values.gitlabProject}}
   description: API surface used by workshop attendees to initialize and load parks data
   links:
-    - url: http://${{values.component_id}}-${{values.namespace}}${{values.cluster_id}}/q/swagger-ui
-      title: Swagger UI
-      icon: web
+    # - url: http://${{values.component_id}}-${{values.namespace}}${{values.cluster_id}}/q/swagger-ui
+    #   title: Swagger UI
+    #   icon: web
     - url: https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}/-/blob/main/src/main/resources/META-INF/openapi.yaml
       title: API Spec
       icon: code
@@ -65,6 +66,6 @@ spec:
   type: openapi
   lifecycle: production
   owner: ${{values.owner | dump}}
-  system: workshop-system-${{values.namespace}}
+  system: workshop-system-${{values.gitlabProject}}
   definition:
     $text: https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}/-/blob/main/src/main/resources/META-INF/openapi.yaml
