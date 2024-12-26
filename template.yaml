@@ -1,16 +1,16 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: poi-backend-demo-template
-  title: Quarkus Backend Application for Points-of-Interest Map Showcase
-  description: Creates the quarkus poi backend app for demo
+  name: quarkus-jenkins-demo-template
+  title: Quarkus Rest API Application with Jenkins Showcase 
+  description: Creates Quarkus Rest API Application
   tags:
     - java
     - quarkus
     - maven
     - showcase
 spec:
-  owner: ganck
+  owner: chengkuangan
   type: service
 
   parameters:
@@ -38,22 +38,22 @@ spec:
           title: Namespace
           type: string
           description: Namespace
-          default: poi-demo
-    - title: Provide Build Information
-      required:
-        - image_host
-        - image_tag
-      properties:
-        image_host:
-          title: Image Host
-          type: string
-          description: Host for storing image (defaults to openshift internal)
-          default: image-registry.openshift-image-registry.svc:5000
-        image_tag:
-          title: Image Tag
-          default: latest
-          type: string
-          description: Image tag to use for storing in the internal registry
+          default: quarkus-api-demo
+    # - title: Provide Build Information
+    #   required:
+    #     - image_host
+    #     - image_tag
+    #   properties:
+    #     image_host:
+    #       title: Image Host
+    #       type: string
+    #       description: Host for storing image (defaults to openshift internal)
+    #       default: image-registry.openshift-image-registry.svc:5000
+    #     image_tag:
+    #       title: Image Tag
+    #       default: latest
+    #       type: string
+    #       description: Image tag to use for storing in the internal registry
   steps:
     - id: templateSource
       name: Generating the source code component
@@ -68,7 +68,7 @@ spec:
           owner: ${{user.entity.metadata.name}}
           cluster_id: .gitlab.apps.sno.ocp.internal
           namespace: ${{parameters.namespace}}
-          component_id: ${{parameters.namespace}}-poi-backend-app
+          component_id: ${{parameters.namespace}}-${{parameters.namespace}}-backend-app
     - id: publishSource
       name: Publishing to Source Code Repository
       action: publish:gitlab
