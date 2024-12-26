@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: Greeting API
+  description: A simple API that returns a greeting message.
+  version: 1.0.0
+servers:
+  - url: /
+    description: Default server
+paths:
+  /hello:
+    get:
+      summary: Get Greeting Message
+      description: Returns a plain text greeting message.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Hello from Quarkus REST"
