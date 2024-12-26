@@ -2,12 +2,13 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: quarkus-jenkins-demo-template
-  title: Quarkus Rest API Application with Jenkins Showcase 
-  description: Creates Quarkus Rest API Application
+  title: Quarkus Rest API App Backend with Jenkins Showcase 
+  description: Creates Quarkus Rest API App Backend
   tags:
     - java
     - quarkus
     - maven
+    - jenkins
     - showcase
 spec:
   owner: chengkuangan
@@ -23,22 +24,27 @@ spec:
           type: string
           description: GitLab Organization
           default: demo
-          enum:
-            - demo
+          # enum:
+          #   - demo
+        gitlabProject:
+          title: Project Name
+          type: string
+          description: GitLab Project or Repo Name
+          default: quarkus-api-jenkins-backend
         description:
           title: Description
           type: string
           description: Help others understand what this component is for
-          default: Creates the quarkus poi backend app for the workshop
-    - title: Provide information about the new component
-      required:
-        - namespace
-      properties:
-        namespace:
-          title: Namespace
-          type: string
-          description: Namespace
-          default: quarkus-api-demo
+          default: Creates the Quarkus Rest API app with Jenkins integration
+    # - title: Provide information about the new component
+    #   required:
+    #     - namespace
+    #   properties:
+    #     namespace:
+    #       title: Namespace
+    #       type: string
+    #       description: Namespace
+    #       default: quarkus-api-demo
     # - title: Provide Build Information
     #   required:
     #     - image_host
@@ -64,18 +70,18 @@ spec:
         values:
           git_host: gitlab.apps.sno.ocp.internal
           gitlabGroup: ${{parameters.gitlabGroup}}
-          repoName: ${{parameters.namespace}}-backend
+          repoName: ${{parameters.gitlabProject}}
           owner: ${{user.entity.metadata.name}}
           cluster_id: .gitlab.apps.sno.ocp.internal
-          namespace: ${{parameters.namespace}}
-          component_id: ${{parameters.namespace}}-${{parameters.namespace}}-backend-app
+          # namespace: ${{parameters.namespace}}
+          component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
     - id: publishSource
       name: Publishing to Source Code Repository
       action: publish:gitlab
       input:
         sourcePath: ./source
         description: ${{parameters.description}}
-        repoUrl: gitlab.apps.sno.ocp.internal?owner=${{parameters.gitlabGroup}}&repo=${{parameters.namespace}}-backend
+        repoUrl: gitlab.apps.sno.ocp.internal?owner=${{parameters.gitlabGroup}}&repo=${{parameters.gitlabProject}}
         defaultBranch: main
         protectDefaultBranch: false
         repoVisibility: public
