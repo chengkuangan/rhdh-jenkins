@@ -33,14 +33,14 @@ spec:
   type: service
   lifecycle: production
   owner: ${{values.owner | dump}}
-  system: workshop-system-${{values.gitlabProject}}
+  system: workshop-system-${{values.repoName}}
   providesApis:
-    - backend-api-${{values.gitlabProject}}
+    - backend-api-${{values.repoName}}
 ---
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: workshop-system-${{values.gitlabProject}}
+  name: workshop-system-${{values.repoName}}
   tags:
     - backstage
     - janus-idp
@@ -53,7 +53,7 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
-  name: backend-api-${{values.gitlabProject}}
+  name: backend-api-${{values.repoName}}
   description: API surface used by workshop attendees to initialize and load parks data
   links:
     # - url: http://${{values.component_id}}-${{values.namespace}}${{values.cluster_id}}/q/swagger-ui
@@ -66,6 +66,6 @@ spec:
   type: openapi
   lifecycle: production
   owner: ${{values.owner | dump}}
-  system: workshop-system-${{values.gitlabProject}}
+  system: workshop-system-${{values.repoName}}
   definition:
     $text: https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}/-/blob/main/src/main/resources/META-INF/openapi.yaml
