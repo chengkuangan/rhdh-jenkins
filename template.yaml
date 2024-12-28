@@ -19,13 +19,16 @@ spec:
       required:
         - gitlabGroup
       properties:
+        gitlabServer:
+          title: GitLab Server
+          type: string
+          description: GitLab Server
+          default: gitlab.apps.sno.ocp.internal
         gitlabGroup:
           title: Repo Owner
           type: string
           description: GitLab Organization
           default: demo
-          # enum:
-          #   - demo
         gitlabProject:
           title: Project Name
           type: string
@@ -36,30 +39,27 @@ spec:
           type: string
           description: Help others understand what this component is for
           default: Creates the Quarkus Rest API app with Jenkins integration
-    # - title: Provide information about the new component
-    #   required:
-    #     - namespace
-    #   properties:
-    #     namespace:
-    #       title: Namespace
-    #       type: string
-    #       description: Namespace
-    #       default: quarkus-api-demo
-    # - title: Provide Build Information
-    #   required:
-    #     - image_host
-    #     - image_tag
-    #   properties:
-    #     image_host:
-    #       title: Image Host
-    #       type: string
-    #       description: Host for storing image (defaults to openshift internal)
-    #       default: image-registry.openshift-image-registry.svc:5000
-    #     image_tag:
-    #       title: Image Tag
-    #       default: latest
-    #       type: string
-    #       description: Image tag to use for storing in the internal registry
+    - title: Provide information about Jenkins Server
+      required:
+        - jenkinsServer
+        - jenkinsUser
+        - jenkinsToken
+      properties:
+        jenkinsServer:
+          title: URL
+          type: string
+          description: Complete Jenkins Server URL
+          default: https://192.168.0.151:8080
+        jenkinsUser:
+          title: Username
+          type: string
+          description: Jenkins Username
+          default: admin
+        jenkinsToken:
+          title: Token
+          type: string
+          description: Jenkins API Token
+          default: 11a85f4465a148f3a9d9e576a59a517c57
   steps:
     - id: templateSource
       name: Generating the source code component
@@ -68,21 +68,66 @@ spec:
         url: ./skeleton
         targetPath: ./source
         values:
-          git_host: gitlab.apps.sno.ocp.internal
+          git_host: ${{ parameters.gitlabServer }}
           gitlabGroup: ${{parameters.gitlabGroup}}
           repoName: ${{parameters.gitlabProject}}
           owner: ${{user.entity.metadata.name}}
-          cluster_id: .gitlab.apps.sno.ocp.internal
+          cluster_id: .${{ parameters.gitlabServer }}
           # namespace: ${{parameters.namespace}}
           # component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
           component_id: ${{parameters.gitlabGroup}}-${{parameters.gitlabProject}}-backend-app
+    # - id: create-jenkins-job
+    #   name: Create Jenkins Job
+    #   action: scaffolder:execute-shell-command
+    #   input:
+    #     shell: |
+    #       #!/bin/bash
+    #       JENKINS_URL="${{ parameters.jenkinsServer }}"
+    #       JENKINS_USER="${{ parameters.jenkinsUser }}"
+    #       JENKINS_TOKEN="${{ parameters.jenkinsToken }}"
+    #       JOB_NAME="${{ parameters.gitlabProject }}"
+    #       REPO_URL="${{ parameters.gitlabServer }}?owner=${{parameters.gitlabGroup}}&repo=${{parameters.gitlabProject}}"
+
+    #       # Generate the Jenkins job XML configuration
+    #       cat <<EOF > config.xml
+    #       <flow-definition plugin="workflow-job">
+    #         <description>${{ parameters.description }}</description>
+    #         <keepDependencies>false</keepDependencies>
+    #         <properties/>
+    #         <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps">
+    #           <scm class="hudson.plugins.git.GitSCM" plugin="git">
+    #             <configVersion>2</configVersion>
+    #             <userRemoteConfigs>
+    #               <hudson.plugins.git.UserRemoteConfig>
+    #                 <url>\${REPO_URL}</url>
+    #               </hudson.plugins.git.UserRemoteConfig>
+    #             </userRemoteConfigs>
+    #             <branches>
+    #               <hudson.plugins.git.BranchSpec>
+    #                 <name>*/main</name>
+    #               </hudson.plugins.git.BranchSpec>
+    #             </branches>
+    #           </scm>
+    #           <scriptPath>Jenkinsfile</scriptPath>
+    #           <lightweight>true</lightweight>
+    #         </definition>
+    #         <triggers/>
+    #       </flow-definition>
+    #       EOF
+
+    #       # Use Jenkins API to create the pipeline job
+    #       curl -X POST \
+    #         -u "\${JENKINS_USER}:\${JENKINS_TOKEN}" \
+    #         -H "Content-Type: application/xml" \
+    #         -d @config.xml \
+    #         "\${JENKINS_URL}/createItem?name=\${JOB_NAME}"
     - id: publishSource
       name: Publishing to Source Code Repository
       action: publish:gitlab
       input:
         sourcePath: ./source
         description: ${{parameters.description}}
-        repoUrl: gitlab.apps.sno.ocp.internal?owner=${{parameters.gitlabGroup}}&repo=${{parameters.gitlabProject}}
+        repoUrl: ${{ parameters.gitlabServer }}?owner=${{parameters.gitlabGroup}}&repo=${{parameters.gitlabProject}}
         defaultBranch: main
         protectDefaultBranch: false
         repoVisibility: public

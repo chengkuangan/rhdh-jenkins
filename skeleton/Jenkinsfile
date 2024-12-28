@@ -1,0 +1,54 @@
+pipeline {
+    
+    agent {
+        label 'maven'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm // Check out the code from the configured SCM repository
+            }
+        }
+
+        stage('Set up Maven Dependencies') {
+            steps {
+                script {
+                    sh 'mvn clean dependency:resolve' // Resolve project dependencies
+                }
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                sh 'mvn clean install' // Compile, run tests, and package the application
+            }
+        }
+
+        stage('Build Quarkus Native Image') {
+            when {
+                expression {
+                    return fileExists('src/main/resources/application.properties') // Ensure Quarkus application exists
+                }
+            }
+            steps {
+                sh 'mvn package' // Use the native profile to build a native executable
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: '**/target/*.jar, **/target/*.zip, **/target/*.native', fingerprint: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed. Please check the logs.'
+        }
+    }
+}
