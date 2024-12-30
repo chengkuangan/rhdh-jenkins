@@ -1,12 +1,12 @@
-schemaVersion: 2.1.0
+schemaVersion: 2.2.0
 metadata:
-  generateName: ${{values.repoName}}
-attributes:
-  controller.devfile.io/storage-type: ephemeral
+  name: ${{values.repoName}}
+# attributes:
+#   controller.devfile.io/storage-type: ephemeral
 components:
   - name: development-tooling
     container:
-      image: registry.redhat.io/devspaces/udi-rhel8:3.4
+      image: registry.redhat.io/devspaces/udi-rhel8
       env:
         - name: QUARKUS_HTTP_HOST
           value: 0.0.0.0
@@ -60,7 +60,7 @@ commands:
       component: development-tooling
       commandLine: 'rm -rf ${HOME}/.java/current/* && ln -s /usr/lib/jvm/java-17-openjdk/* ${HOME}/.java/current'
   - id: configure-git
-    exec:
+    apply:
       commandLine: git config --global http.sslVerify false
       component: development-tooling
 events:
