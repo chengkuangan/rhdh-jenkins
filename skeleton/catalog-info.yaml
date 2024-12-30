@@ -28,7 +28,7 @@ metadata:
     # - url: https://console-openshift-console${{values.cluster_id}}/k8s/ns/${{values.namespace}}/deployments/${{values.component_id}}
     #   title: Deployment
     #   icon: web
-    - url: https://devspaces${{values.ocp_app_domain}}/#https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}?che-editor=che-incubator/che-code/latest&devfilePath=.devfile-vscode.yaml
+    - url: https://devspaces${{values.ocp_app_domain}}#https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}?che-editor=che-incubator/che-code/latest&devfilePath=.devfile-vscode.yaml
       title: OpenShift Dev Spaces (VS Code)
       icon: web
 spec:
