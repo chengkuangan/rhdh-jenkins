@@ -3,11 +3,6 @@ metadata:
   name: ${{values.repoName}}
 # attributes:
 #   controller.devfile.io/storage-type: ephemeral
-projects:
-  - git:
-      remotes:
-        origin: https://gitlab.apps.sno.ocp.internal/demo/quarkus-api-backend.git
-    name: quarkus-api-backend
 components:
   - name: development-tooling
     container:
