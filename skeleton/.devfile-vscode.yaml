@@ -12,6 +12,8 @@ components:
           value: 0.0.0.0
         - name: MAVEN_OPTS
           value: "-Dmaven.repo.local=/home/user/.m2/repository" 
+        - name: GIT_SSL_NO_VERIFY
+          value: "true" # Disables TLS validation
       memoryLimit: 5Gi
       cpuLimit: 2500m
       volumeMounts:
@@ -57,6 +59,12 @@ commands:
     exec:
       component: development-tooling
       commandLine: 'rm -rf ${HOME}/.java/current/* && ln -s /usr/lib/jvm/java-17-openjdk/* ${HOME}/.java/current'
+  - id: configure-git
+    exec:
+      commandLine: git config --global http.sslVerify false
+      component: development-tooling
 events:
+  preStart:
+    - configure-git
   postStart:
     - fix-java-version
