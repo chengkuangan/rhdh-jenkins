@@ -20,7 +20,7 @@ components:
         - name: m2
           path: /home/user/.m2
       endpoints:
-        - name: quarkus-development-server
+        - name: web
           targetPort: 8080
           exposure: public
           secure: false
@@ -59,12 +59,12 @@ commands:
     exec:
       component: development-tooling
       commandLine: 'rm -rf ${HOME}/.java/current/* && ln -s /usr/lib/jvm/java-17-openjdk/* ${HOME}/.java/current'
-  - id: configure-git
-    apply:
-      commandLine: git config --global http.sslVerify false
-      component: development-tooling
+  # - id: configure-git
+  #   apply:
+  #     commandLine: git config --global http.sslVerify false
+  #     component: development-tooling
 events:
-  preStart:
-    - configure-git
+  # preStart:
+  #   - configure-git
   postStart:
     - fix-java-version
