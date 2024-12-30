@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{values.component_id}}-dev
+  name: ${{values.component_id}}
   {%- if values.description %}
   description: ${{values.description}}
   {%- endif %}
@@ -12,13 +12,14 @@ metadata:
     backstage.io/techdocs-ref: url:https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}
     backstage.io/source-location: url:https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}
     # janus-idp.io/tekton:  ${{values.component_id}}
+    # Make sure 'default-jenkins' is the same as the name configured in dynamic plugin.
     jenkins.io/job-full-name: 'default-jenkins:${{values.gitlabGroup}}/${{values.repoName}}' 
     gitlab.com/project-slug: ${{values.gitlabGroup}}/${{values.repoName}}
   tags:
     - java
     - quarkus
     - maven
-    - workshop
+    - demo
     - jenkins
   links:
     # - url: https://console-openshift-console${{values.cluster_id}}/dev-pipelines/ns/${{values.namespace}}/
@@ -27,7 +28,8 @@ metadata:
     # - url: https://console-openshift-console${{values.cluster_id}}/k8s/ns/${{values.namespace}}/deployments/${{values.component_id}}
     #   title: Deployment
     #   icon: web
-    - url: https://devspaces${{values.cluster_id}}/#https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}?che-editor=che-incubator/che-code/latest&devfilePath=.devfile-vscode.yaml
+    - url: https://devspaces${{values.ocp_app_domain}}/#https://${{values.git_host}}/${{values.gitlabGroup}}/${{values.repoName}}?che-editor=che-incubator/che-code/latest&devfilePath=.devfile-vscode.yaml
+           https://devspaces.apps.sno.ocp.internal/
       title: OpenShift Dev Spaces (VS Code)
       icon: web
 spec:
@@ -44,10 +46,12 @@ metadata:
   name: workshop-system-${{values.repoName}}
   tags:
     - backstage
-    - janus-idp
     - openshift
-    - workshop
-    - rh-summit
+    - demo
+    - maven
+    - quarkus
+    - java
+    - jenkins
 spec:
   owner: ${{values.owner | dump}}
 ---
