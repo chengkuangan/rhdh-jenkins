@@ -72,10 +72,10 @@ spec:
           gitlabGroup: ${{parameters.gitlabGroup}}
           repoName: ${{parameters.gitlabProject}}
           owner: ${{user.entity.metadata.name}}
-          ocp_app_domain: .apps.sno.ocp.internal
+          ocp_app_domain: .apps.cluster-zrd5j.zrd5j.sandbox2112.opentlc.com
           # namespace: ${{parameters.namespace}}
           # component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
-          component_id: ${{parameters.gitlabGroup}}-${{parameters.gitlabProject}}-backend-app
+          component_id: ${{parameters.gitlabGroup}}-${{parameters.gitlabProject}}
     # - id: create-jenkins-job
     #   name: Create Jenkins Job
     #   action: scaffolder:execute-shell-command
