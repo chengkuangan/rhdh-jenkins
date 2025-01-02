@@ -12,8 +12,6 @@ components:
           value: 0.0.0.0
         - name: MAVEN_OPTS
           value: "-Dmaven.repo.local=/home/user/.m2/repository" 
-        - name: GIT_SSL_NO_VERIFY
-          value: "true" # Disables TLS validation
       memoryLimit: 5Gi
       cpuLimit: 2500m
       volumeMounts:
