@@ -73,7 +73,8 @@ spec:
           gitlabGroup: ${{parameters.gitlabGroup}}
           repoName: ${{parameters.gitlabProject}}
           owner: ${{user.entity.metadata.name}}
-          ocp_app_domain: .apps.cluster-zrd5j.zrd5j.sandbox2112.opentlc.com
+          # ocp_app_domain: .apps.cluster-zrd5j.zrd5j.sandbox2112.opentlc.com
+          ocp_app_domain: .apps.sno.ocp.internal
           # namespace: ${{parameters.namespace}}
           # component_id: ${{parameters.namespace}}-${{parameters.gitlabProject}}-backend-app
           component_id: ${{parameters.gitlabGroup}}-${{parameters.gitlabProject}}
