@@ -189,7 +189,7 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
         url: ./skeleton
         targetPath: ./source
         values:
-          ocp_app_domain: .apps.sno.ocp.internal
+          ocp_app_domain: <ocp apps domain>
       
     ```
 
