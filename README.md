@@ -59,19 +59,17 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
 
 2. Under API Token, click `Add new Token`. Note down the generated token. We need this to configure Jenkins for RHDH Template
 
-    `11a85f4465a148f3a9d9e576a59a517c57`
-
 3. Click `Save`
 
 ## Configure Red Hat Developer Hub
 
-1. The [app-config-rhdh.yaml](/deployment/rhdh/app-config-rhdh.yaml) is configured using environmental variables, thus we need to include these environmental variables in a `secret`. Create the following `secret` with the respective Jenkins details.
+1. The RHDH application configuration is configured using environmental variables, thus we need to include these environmental variables in a `secret`. Create the following `secret` with the respective Jenkins details.
 
     ```yaml
     data:
-      JENKINS_URL: aHR0cDovLzE5Mi4xNjguMC4xNTE6ODA4MA==
-      JENKINS_USERNAME: YWRtaW4=
-      JENKINS_TOKEN: MTFhODVmNDQ2NWExNDhmM2E5ZDllNTc2YTU5YTUxN2M1Nw==
+      JENKINS_URL: <base64 encoded Jenkins URL>
+      JENKINS_USERNAME: <base64 encoded username>
+      JENKINS_TOKEN: <base64 encoded token>
     type: Opaque
     ```
 
@@ -87,7 +85,7 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
               apiKey: ${JENKINS_TOKEN}
     ```
 
-3. Create the following `configmap` to enable the necessary dynamic plugin
+3. Create or modify existing `configmap` to enable the necessary dynamic plugin
 
     ```yaml
     kind: ConfigMap
@@ -168,11 +166,7 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
     cp showcase/jenkins /tmp/jenkins-template
     ```
 
-2. Modify the template if necessary to suit your environment settings
-
-3. Create a new repo in your Github
-
-4. Modify the `template.yaml` with the correct OCP Apps Domain `ocp_app_domain`
+2. Modify the `template.yaml` with the correct OCP Apps Domain `ocp_app_domain`
 
     ```yaml
 
@@ -187,6 +181,9 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
           ocp_app_domain: .apps.sno.ocp.internal
       
     ```
+
+3. Create a new repo in your Github
+
 
 4. Initialize the new content with Git and push it to your GitHub 
 
