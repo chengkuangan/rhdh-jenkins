@@ -61,6 +61,17 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
 
 3. Click `Save`
 
+## Create GitLab Owner
+
+1. Goto GitLab web console. At the `Groups` landing page and create a group with the following details
+
+    | Fields | Value |
+    | --- | --- |
+    | Group Name | demo  |
+    | Visibility Level | Public |
+    
+    Accept the default values for other fields and click `Create group` button
+
 ## Configure Red Hat Developer Hub
 
 1. The RHDH application configuration is configured using environmental variables, thus we need to include these environmental variables in a `secret`. Create the following `secret` with the respective Jenkins details.
@@ -200,3 +211,22 @@ To simulate an external Jenkins environment, you can run the Jenkins server with
 
 2. Click on `Create...` > `Register Existing Component`, enter your GitHub repo URL and follow through the wizard to create the template
 
+3. A demo template will be imported as per the following:
+
+    ![RHDH Template](img/template.png)
+
+4. Proceed to create the template and these are the result that you will get
+
+    ![RHDH Catalog](img/catalog.png)
+
+5. Repository created at GitLab
+
+    ![RHDH Catalog](img/gitlab.png)
+
+5. Configure a Jenkins project under the `demo` folder
+
+    ![RHDH Catalog](img/jenkins-pipeline.png)
+
+6. Run the Jenkins build and you will see the build information is available at the RHDH catalog
+
+    ![RHDH Catalog](img/jenkins-build.png)
