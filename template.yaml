@@ -23,7 +23,8 @@ spec:
           title: GitLab Server
           type: string
           description: GitLab Server
-          default: gitlab.apps.sno.ocp.internal
+          # default: gitlab.apps.sno.ocp.internal
+          default: gitlab-gitlab.apps.sno.ocp.internal
         gitlabGroup:
           title: Repo Owner
           type: string
